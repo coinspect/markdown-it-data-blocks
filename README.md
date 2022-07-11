@@ -1,7 +1,7 @@
 
 # markdown-it-data-blocks
 
-> Markdown-it plugin for creating block-level containers and with metadata.
+> Markdown-it plugin for creating block-level containers with metadata.
 
 ## Description
 
