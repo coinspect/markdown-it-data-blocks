@@ -68,7 +68,7 @@ import * as  MarkdownIt from 'markdown-it'
 import yaml from 'yaml'
 import data_blocks from 'markdown-it-data-blocks'
 
-const metadataParser = yaml.parser
+const metadataParser = (str,data) => yaml.parse(str)
 const markdown = new MarkdownIt().use(data_blocks, { metadataParser })
 ```
 
