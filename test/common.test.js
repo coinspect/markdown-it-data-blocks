@@ -1,4 +1,4 @@
-import { getOpenRegex, getCloseRegex, parseOptions, getClassName } from '../index.js'
+import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index.js'
 import { assert } from 'chai'
 
 const defaultOptions = parseOptions()
@@ -43,14 +43,14 @@ describe('closeRegex', function () {
   })
 })
 
-describe('getClassName', function () {
+describe('getBlockType', function () {
   const { openMarkup } = defaultOptions
   const name = 'tEsT-test'
-  it('getClassName should return className', () => {
-    assert.equal(getClassName(`${openMarkup}`, defaultOptions), '')
-    assert.equal(getClassName(`${openMarkup}${name}`, defaultOptions), name)
-    assert.equal(getClassName(`${openMarkup} ${name}`, defaultOptions), name)
-    assert.equal(getClassName(`${openMarkup}    ${name}       `, defaultOptions), name)
-    assert.equal(getClassName(`${openMarkup}    ${name} xxX      `, defaultOptions), name)
+  it('getBlockType should return the block type', () => {
+    assert.equal(getBlockType(`${openMarkup}`, defaultOptions), '')
+    assert.equal(getBlockType(`${openMarkup}${name}`, defaultOptions), name)
+    assert.equal(getBlockType(`${openMarkup} ${name}`, defaultOptions), name)
+    assert.equal(getBlockType(`${openMarkup}    ${name}       `, defaultOptions), name)
+    assert.equal(getBlockType(`${openMarkup}    ${name} xxX      `, defaultOptions), name)
   })
 })

@@ -5,6 +5,7 @@ const closeName = `${NAME}_close`
 const optionsDefault = {
   titleLevel: 3,
   titleCb: (metadata) => metadata.title || '',
+  metadataBlockTypeName: 'type',
   tag: 'div',
   openMarkup: '---',
   closeMarkup: '/--',
@@ -46,10 +47,11 @@ const addTitle = ({ state, title, titleLevel }) => {
   token.markup = '#'.repeat(titleLevel)
 }
 
-const renderDefault = (tokens, idx, _options, env, self) => {
+const renderDefault = ({ metadataBlockTypeName }) => (tokens, idx, _options, env, self) => {
   const token = tokens[idx]
   if (token.nesting === 1) {
-    const { className } = token.meta || {}
+    const metadata = token.meta || {}
+    const className = metadata[metadataBlockTypeName]
     if (className) token.attrJoin('class', className)
   }
   return self.renderToken(tokens, idx, _options, env, self)
@@ -60,12 +62,12 @@ export const getOpenRegex = ({ openMarkup }) => new RegExp(`^${openMarkup}[a-z-|
 
 export const getCloseRegex = ({ closeMarkup }) => new RegExp(`^${closeMarkup}\\s*$`)
 
-export const getClassName = (openTag, { openMarkup }) => `${openTag}`.replace(`${openMarkup}`, '').trim().split(' ')[0].trim()
+export const getBlockType = (openTag, { openMarkup }) => `${openTag}`.replace(`${openMarkup}`, '').trim().split(' ')[0].trim()
 
 
 export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 
-  const { titleLevel, titleCb, tag, openMarkup, closeMarkup } = options
+  const { titleLevel, titleCb, tag, openMarkup, closeMarkup, metadataBlockTypeName } = options
   const openRegex = getOpenRegex(options)
   const closeRegex = getCloseRegex(options)
 
@@ -86,7 +88,7 @@ export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 
   if (silent) return true // --- check where it should be
 
-  metadata.className = getClassName(opener, options)
+  metadata[metadataBlockTypeName] = getBlockType(opener, options)
   const title = titleCb(metadata, content)
 
   let token = state.push(openName, tag, 1)
@@ -110,7 +112,7 @@ export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 
 export default function metadata_blocks (md, options = {}) {
   options = parseOptions(options)
-  const render = options.render || renderDefault
+  const render = options.render || renderDefault(options)
 
   md.block.ruler.before('table', NAME, (state, startLine, endLine, silent) => {
     return parseBlock({ state, startLine, endLine, silent, options })

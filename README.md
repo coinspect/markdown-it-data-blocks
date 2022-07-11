@@ -40,10 +40,10 @@ metadata:
 
 ``` json
 {
+    "type": "my-block",
     "title": "Test block",
     "foo": "foo",
-    "bar": "bar",
-    "className": "my-block"
+    "bar": "bar"
 }
 
 ```
