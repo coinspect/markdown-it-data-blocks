@@ -14,10 +14,10 @@ const optionsDefault = {
 }
 
 
-const parseMetadata = (str, { metadataParser, debug }) => {
+const parseMetadata = (str, { metadataParser, debug }, data = {}) => {
   try {
     if (typeof metadataParser !== 'function') throw new Error('metadata parser should be a function')
-    const metadata = metadataParser(str)
+    const metadata = metadataParser(str, data)
     if (typeof metadata !== 'object') throw new Error('Metadata should be and object')
     return metadata
   } catch (err) {
@@ -25,7 +25,6 @@ const parseMetadata = (str, { metadataParser, debug }) => {
     return {}
   }
 }
-
 
 export const parseOptions = (userOptions = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions)
@@ -80,15 +79,17 @@ export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 
   if (!end) return false
 
+  const blockType = getBlockType(opener, options)
+
   let metadataEnd = nextLines.findIndex((x, i) => i > 0 && x === '')
-  const metadata = parseMetadata(nextLines.slice(0, metadataEnd).join('\n'), options)
+  const metadata = parseMetadata(nextLines.slice(0, metadataEnd).join('\n'), options, { blockType })
 
   if (!Object.keys(metadata).length) metadataEnd = 0
   const content = nextLines.slice(metadataEnd, end).join('\n')
 
   if (silent) return true // --- check where it should be
 
-  metadata[metadataBlockTypeName] = getBlockType(opener, options)
+  metadata[metadataBlockTypeName] = blockType
   const title = titleCb(metadata, content)
 
   let token = state.push(openName, tag, 1)
