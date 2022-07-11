@@ -5,23 +5,23 @@ const closeName = `${NAME}_close`
 const optionsDefault = {
   titleLevel: 3,
   titleCb: (metadata) => metadata.title || '',
-  classNameDefault: 'data-block',
   tag: 'div',
   openMark: '-',
   closeMark: '.',
+  markCount: 3,
   metadataParser: undefined,
-  markCount: 3
+  debug: false
 }
 
 
-const parseMetadata = (str, { metadataParser }) => {
+const parseMetadata = (str, { metadataParser, debug }) => {
   try {
     if (typeof metadataParser !== 'function') throw new Error('metadata parser should be a function')
     const metadata = metadataParser(str)
     if (typeof metadata !== 'object') throw new Error('Metadata should be and object')
     return metadata
   } catch (err) {
-    console.error(err)
+    debug(err)
     return {}
   }
 }
@@ -29,11 +29,13 @@ const parseMetadata = (str, { metadataParser }) => {
 
 export const parseOptions = (userOptions = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions)
-  let { openMark, closeMark, markCount } = options
+  let { openMark, closeMark, markCount, debug } = options
   closeMark = closeMark || openMark
   const openMarkup = `${openMark}`.repeat(markCount)
   const closeMarkup = `${closeMark}`.repeat(markCount)
-  return Object.assign(options, { openMarkup, closeMarkup })
+  debug = debug || function () { }
+  if (debug && typeof debug !== 'function') debug = console.error
+  return Object.assign(options, { openMarkup, closeMarkup, debug })
 }
 
 
