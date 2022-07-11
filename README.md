@@ -9,7 +9,6 @@ This plugin combines the features of: [markdown-it-container](https://github.com
 
 It allows to insert metadata in blocks and wrap that blocks in a class.
 
-
 ## Example
 
 markdown:
@@ -24,7 +23,7 @@ bar: bar
 
 This is a test block
 
-...
+/--
 
 ```
 

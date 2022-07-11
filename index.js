@@ -6,9 +6,8 @@ const optionsDefault = {
   titleLevel: 3,
   titleCb: (metadata) => metadata.title || '',
   tag: 'div',
-  openMark: '-',
-  closeMark: '.',
-  markCount: 3,
+  openMarkup: '---',
+  closeMarkup: '/--',
   metadataParser: undefined,
   debug: false
 }
@@ -29,10 +28,8 @@ const parseMetadata = (str, { metadataParser, debug }) => {
 
 export const parseOptions = (userOptions = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions)
-  let { openMark, closeMark, markCount, debug } = options
-  closeMark = closeMark || openMark
-  const openMarkup = `${openMark}`.repeat(markCount)
-  const closeMarkup = `${closeMark}`.repeat(markCount)
+  let { debug, openMarkup, closeMarkup } = options
+  closeMarkup = closeMarkup || openMarkup
   debug = debug || function () { }
   if (debug && typeof debug !== 'function') debug = console.error
   return Object.assign(options, { openMarkup, closeMarkup, debug })
