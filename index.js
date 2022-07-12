@@ -22,7 +22,7 @@ const parseMetadata = (str, { metadataParser, debug }, data = {}) => {
     return metadata
   } catch (err) {
     debug(err)
-    return {}
+    return
   }
 }
 
@@ -64,9 +64,31 @@ export const getCloseRegex = ({ closeMarkup }) => new RegExp(`^${closeMarkup}\\s
 export const getBlockType = (openTag, { openMarkup }) => `${openTag}`.replace(`${openMarkup}`, '').trim().split(' ')[0].trim()
 
 
+const insertBlock = ({ state, startLine, metadata, content, tokenStart, tokenEnd, options }) => {
+  const { openMarkup, closeMarkup, tag, titleCb, titleLevel } = options
+  const title = (typeof titleCb === 'function') ? titleCb(metadata, content) : undefined
+
+  let token = state.push(openName, tag, 1)
+  token.meta = metadata
+  token.markup = openMarkup
+  token.content = content
+  token.block = true
+  token.map = [tokenStart, tokenEnd]
+
+  // Add title
+  if (title) addTitle({ state, title, titleLevel })
+
+  state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd)
+
+  token = state.push(closeName, tag, -1)
+  token.markup = closeMarkup
+
+  state.line = startLine + tokenEnd + 1
+}
+
 export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 
-  const { titleLevel, titleCb, tag, openMarkup, closeMarkup, metadataBlockTypeName } = options
+  const { metadataBlockTypeName } = options
   const openRegex = getOpenRegex(options)
   const closeRegex = getCloseRegex(options)
 
@@ -82,32 +104,17 @@ export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
   const blockType = getBlockType(opener, options)
 
   let metadataEnd = nextLines.findIndex((x, i) => i > 0 && x === '')
-  const metadata = parseMetadata(nextLines.slice(0, metadataEnd).join('\n'), options, { blockType })
+  let metadata = parseMetadata(nextLines.slice(0, metadataEnd).filter(x => x).join('\n'), options, { blockType })
 
+  if (typeof metadata !== 'object') metadata = {}
   if (!Object.keys(metadata).length) metadataEnd = 0
+
   const content = nextLines.slice(metadataEnd, end).join('\n')
 
   if (silent) return true // --- check where it should be
 
-  metadata[metadataBlockTypeName] = blockType
-  const title = titleCb(metadata, content)
-
-  let token = state.push(openName, tag, 1)
-  token.meta = metadata
-  token.markup = openMarkup
-  token.content = content
-  token.block = true
-  token.map = [metadataEnd + 1, end + 1]
-
-  // Add title
-  if (title) addTitle({ state, title, titleLevel })
-
-  state.md.block.tokenize(state, startLine + metadataEnd + 1, startLine + end + 1)
-
-  token = state.push(closeName, tag, -1)
-  token.markup = closeMarkup
-
-  state.line = startLine + end + 2
+  if (metadataBlockTypeName) metadata[`${metadataBlockTypeName}`] = blockType
+  insertBlock({ state, startLine, metadata, content, tokenStart: metadataEnd + 1, tokenEnd: end + 1, options })
   return true
 }
 
