@@ -7,7 +7,10 @@ const options = parseOptions()
 const { metadataBlockTypeName, openMarkup, closeMarkup } = options
 const openName = `${NAME}_open`
 const closeName = `${NAME}_close`
+const metadataOpenName = `${NAME}_metadata_open`
+const metadataCloseName = `${NAME}_metadata_close`
 
+const tokenOrder = [openName, metadataOpenName, metadataCloseName, closeName]
 
 describe('Test plugin without metadata', function () {
   const markdown = new MarkdownIt().use(data_blocks, options)
@@ -19,16 +22,12 @@ describe('Test plugin without metadata', function () {
     assert.isArray(result)
   })
 
-  it('parsing result should have 2 tokens', () => {
-    assert.equal(result.length, 2)
+  it('parsing result should have 4 tokens', () => {
+    assert.equal(result.length, 4)
   })
 
-  it(`The 1st token should be as ${openName} type`, () => {
-    assert.equal(result[0].type, openName)
-  })
-
-  it(`The 2nd token should be as ${closeName} type`, () => {
-    assert.equal(result[1].type, closeName)
+  it(`The token order should be: ${tokenOrder}`, () => {
+    assert.deepEqual(result.slice(0, 4).map(r => r.type), tokenOrder)
   })
 
   it(`The ${openName} token should have a meta property as object`, () => {

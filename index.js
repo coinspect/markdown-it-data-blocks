@@ -2,6 +2,9 @@ export const NAME = 'data_blocks'
 const openName = `${NAME}_open`
 const closeName = `${NAME}_close`
 
+const openMetadataName = `${NAME}_metadata_open`
+const closeMetadataName = `${NAME}_metadata_close`
+
 const optionsDefault = {
   titleLevel: 3,
   titleCb: (metadata) => metadata.title || '',
@@ -10,6 +13,7 @@ const optionsDefault = {
   openMarkup: '---',
   closeMarkup: '/--',
   metadataParser: undefined,
+  metadataRenderer: () => '', // don't render metadata as default
   debug: false
 }
 
@@ -46,6 +50,13 @@ const addTitle = ({ state, title, titleLevel }) => {
   token.markup = '#'.repeat(titleLevel)
 }
 
+
+const addMetadata = ({ state, metadata }) => {
+  let token = state.push(openMetadataName, 'div', 1)
+  token.content = metadata
+  token = state.push(closeMetadataName, 'div', -1)
+}
+
 const renderDefault = ({ metadataBlockTypeName }) => (tokens, idx, _options, env, self) => {
   const token = tokens[idx]
   if (token.nesting === 1) {
@@ -77,6 +88,9 @@ const insertBlock = ({ state, startLine, metadata, content, tokenStart, tokenEnd
 
   // Add title
   if (title) addTitle({ state, title, titleLevel })
+
+  // Add metadata block (to render)
+  addMetadata({ state, metadata })
 
   state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd)
 
@@ -121,6 +135,7 @@ export const parseBlock = ({ state, startLine, endLine, silent, options }) => {
 export default function metadata_blocks (md, options = {}) {
   options = parseOptions(options)
   const render = options.render || renderDefault(options)
+  const { metadataRenderer } = options
 
   md.block.ruler.before('table', NAME, (state, startLine, endLine, silent) => {
     return parseBlock({ state, startLine, endLine, silent, options })
@@ -128,4 +143,6 @@ export default function metadata_blocks (md, options = {}) {
 
   md.renderer.rules[openName] = render
   md.renderer.rules[closeName] = render
+  md.renderer.rules[openMetadataName] = metadataRenderer
+  md.renderer.rules[closeMetadataName] = metadataRenderer
 }
