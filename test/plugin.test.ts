@@ -1,6 +1,6 @@
 import { assert } from 'chai'
 import MarkdownIt from 'markdown-it'
-import { default as data_blocks, parseOptions, NAME } from '../index.js'
+import { default as data_blocks, parseOptions, NAME } from '../index'
 
 const options = parseOptions()
 
@@ -16,7 +16,7 @@ describe('Test plugin without metadata', function () {
   const markdown = new MarkdownIt().use(data_blocks, options)
   const blockName = 'testName'
   const md = [' ', `${openMarkup} ${blockName}`, ' ', `${closeMarkup}`].join('\n')
-  const result = markdown.parse(md)
+  const result = markdown.parse(md, {})
 
   it('parsing result should be an array', () => {
     assert.isArray(result)
@@ -37,4 +37,4 @@ describe('Test plugin without metadata', function () {
   it(`The block type should be included in meta`, () => {
     assert.equal(result[0].meta[metadataBlockTypeName], blockName)
   })
-}) 
+})

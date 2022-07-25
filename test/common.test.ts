@@ -1,4 +1,4 @@
-import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index.js'
+import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index'
 import { assert } from 'chai'
 
 const defaultOptions = parseOptions()

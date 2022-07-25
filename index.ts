@@ -50,12 +50,14 @@ const parseMetadata = (
       throw new Error("Metadata should be and object");
     return metadata;
   } catch (err) {
-    debug(err);
+    if (debug) {
+      debug(err);
+    }
     return;
   }
 };
 
-export const parseOptions = (userOptions: MarkdownIt.Options = {}) => {
+export const parseOptions = (userOptions: object = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions);
   let { debug, openMarkup, closeMarkup } = options;
   closeMarkup = closeMarkup || openMarkup;

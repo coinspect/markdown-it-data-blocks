@@ -1,10 +1,10 @@
 import { assert } from 'chai'
 import MarkdownIt from 'markdown-it'
 import yaml from 'yaml'
-import { default as data_blocks, parseOptions } from '../index.js'
+import { default as data_blocks, parseOptions } from '../index'
 
 
-const metadataParser = (str, data) => yaml.parse(str)
+const metadataParser = (str: string, data: any) => yaml.parse(str)
 const options = parseOptions({ metadataParser })
 
 const { metadataBlockTypeName, openMarkup, closeMarkup } = options
@@ -21,7 +21,7 @@ describe('Parse YAML metadata', function () {
   const markdown = new MarkdownIt().use(data_blocks, options)
   const blockName = 'testName'
   const md = [' ', `${openMarkup} ${blockName}`, yaml.stringify(metadata), ' ', `${closeMarkup}`].join('\n')
-  const [token] = markdown.parse(md)
+  const [token] = markdown.parse(md, {})
 
   it('token.meta should be an object', () => {
     assert.typeOf(token.meta, 'object')
@@ -33,8 +33,7 @@ describe('Parse YAML metadata', function () {
 
   it('token.meta should have all the metadata properties', () => {
     for (let p in metadata) {
-      assert.deepEqual(metadata[p], token.meta[p])
+      assert.deepEqual(metadata[p as keyof typeof metadata], token.meta[p])
     }
   })
-
 })
