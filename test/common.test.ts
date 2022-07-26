@@ -1,56 +1,55 @@
 import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index'
-import { assert } from 'chai'
 
 const defaultOptions = parseOptions()
 
 
-describe('parseOptions', function () {
+describe('parseOptions', () => {
   it('default options should be an object', () => {
-    assert.typeOf(defaultOptions, 'object')
+    expect(typeof defaultOptions).toBe('object')
   })
 })
 
-describe('openRegex', function () {
+describe('openRegex', () => {
   const { openMarkup } = defaultOptions
   const re = getOpenRegex(defaultOptions)
   it(`openRegex should match the openMarkup: ${openMarkup}`, () => {
-    assert.isTrue(re.test(openMarkup))
+    expect(re.test(openMarkup)).toBe(true)
   })
 
   it(`ending spaces should be ignored`, () => {
-    assert.isTrue(re.test(`${openMarkup}   `))
+    expect(re.test(`${openMarkup}   `)).toBe(true)
   })
 
   it(`openMarkup should admit only one word`, () => {
-    assert.isTrue(re.test(`${openMarkup} tesT`))
-    assert.isTrue(re.test(`${openMarkup} Test    `))
-    assert.isTrue(re.test(`${openMarkup}test`))
-    assert.isTrue(re.test(`${openMarkup}-test`))
-    assert.isFalse(re.test(`${openMarkup} test Test`))
+    expect(re.test(`${openMarkup} tesT`)).toBe(true)
+    expect(re.test(`${openMarkup} Test    `)).toBe(true)
+    expect(re.test(`${openMarkup}test`)).toBe(true)
+    expect(re.test(`${openMarkup}-test`)).toBe(true)
+    expect(re.test(`${openMarkup} test Test`)).toBe(false)
   })
 })
 
 
-describe('closeRegex', function () {
+describe('closeRegex', () => {
   const { closeMarkup } = defaultOptions
   const re = getCloseRegex(defaultOptions)
   it(`closeRegex should match the closeMarkup: ${closeMarkup}`, () => {
-    assert.isTrue(re.test(closeMarkup))
+    expect(re.test(closeMarkup)).toBe(true)
   })
 
   it(`ending spaces should be ignored`, () => {
-    assert.isTrue(re.test(`${closeMarkup}   `))
+    expect(re.test(`${closeMarkup}   `)).toBe(true)
   })
 })
 
-describe('getBlockType', function () {
+describe('getBlockType', () => {
   const { openMarkup } = defaultOptions
   const name = 'tEsT-test'
   it('getBlockType should return the block type', () => {
-    assert.equal(getBlockType(`${openMarkup}`, defaultOptions), '')
-    assert.equal(getBlockType(`${openMarkup}${name}`, defaultOptions), name)
-    assert.equal(getBlockType(`${openMarkup} ${name}`, defaultOptions), name)
-    assert.equal(getBlockType(`${openMarkup}    ${name}       `, defaultOptions), name)
-    assert.equal(getBlockType(`${openMarkup}    ${name} xxX      `, defaultOptions), name)
+    expect(getBlockType(`${openMarkup}`, defaultOptions)).toEqual('')
+    expect(getBlockType(`${openMarkup}${name}`, defaultOptions)).toEqual(name)
+    expect(getBlockType(`${openMarkup} ${name}`, defaultOptions)).toEqual(name)
+    expect(getBlockType(`${openMarkup}    ${name}       `, defaultOptions)).toEqual(name)
+    expect(getBlockType(`${openMarkup}    ${name} xxX      `, defaultOptions)).toEqual(name)
   })
 })

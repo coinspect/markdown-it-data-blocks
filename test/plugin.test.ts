@@ -1,4 +1,3 @@
-import { assert } from 'chai'
 import MarkdownIt from 'markdown-it'
 import { default as data_blocks, parseOptions, NAME } from '../index'
 
@@ -12,29 +11,29 @@ const metadataCloseName = `${NAME}_metadata_close`
 
 const tokenOrder = [openName, metadataOpenName, metadataCloseName, closeName]
 
-describe('Test plugin without metadata', function () {
+describe('Test plugin without metadata', () => {
   const markdown = new MarkdownIt().use(data_blocks, options)
   const blockName = 'testName'
   const md = [' ', `${openMarkup} ${blockName}`, ' ', `${closeMarkup}`].join('\n')
   const result = markdown.parse(md, {})
 
   it('parsing result should be an array', () => {
-    assert.isArray(result)
+    expect(Array.isArray(result)).toBe(true)
   })
 
   it('parsing result should have 4 tokens', () => {
-    assert.equal(result.length, 4)
+    expect(result.length).toEqual(4)
   })
 
   it(`The token order should be: ${tokenOrder}`, () => {
-    assert.deepEqual(result.slice(0, 4).map(r => r.type), tokenOrder)
+    expect(result.slice(0, 4).map(r => r.type)).toEqual(tokenOrder)
   })
 
   it(`The ${openName} token should have a meta property as object`, () => {
-    assert.typeOf(result[0].meta, 'object')
+    expect(typeof result[0].meta).toBe('object')
   })
 
   it(`The block type should be included in meta`, () => {
-    assert.equal(result[0].meta[metadataBlockTypeName], blockName)
+    expect(result[0].meta[metadataBlockTypeName]).toEqual(blockName)
   })
 })
