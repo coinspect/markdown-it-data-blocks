@@ -1,6 +1,6 @@
 import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index'
 
-const defaultOptions = parseOptions()
+const defaultOptions = parseOptions({})
 
 
 describe('parseOptions', () => {

@@ -1,7 +1,5 @@
 import MarkdownIt from "markdown-it";
 import Renderer from "markdown-it/lib/renderer";
-import Token from "markdown-it/lib/token";
-import ParserBlock from "markdown-it/lib/parser_block";
 import StateBlock from "markdown-it/lib/rules_block/state_block";
 export const NAME = "data_blocks";
 const openName = `${NAME}_open`;
@@ -18,11 +16,7 @@ type CustomOptions = {
   openMarkup: string;
   closeMarkup: string;
   metadataParser: ((str: string, data: any) => object) | undefined;
-  metadataRenderer: (
-    tokens: Token[],
-    options: MarkdownIt.Options,
-    env: any
-  ) => string;
+  metadataRenderer: Renderer.RenderRule;
   debug: boolean | ((...data: any[]) => void);
 };
 const optionsDefault: CustomOptions = {
@@ -57,7 +51,11 @@ const parseMetadata = (
   }
 };
 
-export const parseOptions = (userOptions: object = {}) => {
+export const parseOptions: (
+  userOptions: MarkdownIt.Options & {
+    metadataParser?: (str: string, data: any) => any;
+  }
+) => CustomOptions = (userOptions = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions);
   let { debug, openMarkup, closeMarkup } = options;
   closeMarkup = closeMarkup || openMarkup;
@@ -95,30 +93,16 @@ const addMetadata = ({
   token = state.push(closeMetadataName, "div", -1);
 };
 
-const renderDefault =
-  ({ metadataBlockTypeName }: { metadataBlockTypeName: string }) =>
-  (
-    tokens: { [x: string]: any },
-    idx: string | number,
-    _options: any,
-    env: any,
-    self: {
-      renderToken: (
-        arg0: any,
-        arg1: any,
-        arg2: any,
-        arg3: any,
-        arg4: any
-      ) => any;
-    }
-  ) => {
+const renderDefault: (options: CustomOptions) => Renderer.RenderRule =
+  ({ metadataBlockTypeName }) =>
+  (tokens, idx, _options, self) => {
     const token = tokens[idx];
     if (token.nesting === 1) {
       const metadata = token.meta || {};
       const className = metadata[metadataBlockTypeName];
       if (className) token.attrJoin("class", className);
     }
-    return self.renderToken(tokens, idx, _options, env, self);
+    return self.renderToken(tokens, idx, _options);
   };
 
 export const getOpenRegex = ({ openMarkup }: { openMarkup: string }) =>
@@ -162,9 +146,9 @@ const insertBlock = ({
   if (title) addTitle({ state, title, titleLevel });
 
   // Add metadata block (to render)
-  // Here I have a typing issue, 
-  //  addMetadata puts the parameter in token.content which is typed as a string. 
-  // Hacked it but I didn't have any idea of what I did
+  // Here I had a typing issue,
+  // addMetadata puts the parameter in token.content which is typed as a string.
+  // Hacked at it but I didn't have any idea of what I did
   addMetadata({ state, metadata: metadata.title });
 
   state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd);
@@ -241,13 +225,22 @@ export const parseBlock = ({
   return true;
 };
 
-export default function metadata_blocks(md: MarkdownIt, options: any = {}) {
-  options = parseOptions(options);
-  const render = options.render || renderDefault(options);
-  const { metadataRenderer } = options;
+export default function metadata_blocks(
+  md: MarkdownIt,
+  options: MarkdownIt.Options & { render?: Renderer.RenderRule } = {}
+) {
+  const customOptions = parseOptions(options);
+  const render = options.render || renderDefault(customOptions);
+  const { metadataRenderer } = customOptions;
 
   md.block.ruler.before("table", NAME, (state, startLine, endLine, silent) => {
-    return parseBlock({ state, startLine, endLine, silent, options });
+    return parseBlock({
+      state,
+      startLine,
+      endLine,
+      silent,
+      options: customOptions,
+    });
   });
 
   md.renderer.rules[openName] = render;

@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import { default as data_blocks, parseOptions, NAME } from '../index'
 
-const options = parseOptions()
+const options = parseOptions({})
 
 const { metadataBlockTypeName, openMarkup, closeMarkup } = options
 const openName = `${NAME}_open`
