@@ -51,15 +51,15 @@ metadata:
 ## Installation
 
 ```shell
-nmp install markdown-it-data-blocks --save
+npm install markdown-it-data-blocks --save
 ```
 
 ## Usage
 
 ```shell
-nmp install markdown-it --save
-nmp install markdown-it-data-blocks --save
-nmp install yaml --save
+npm install markdown-it --save
+npm install markdown-it-data-blocks --save
+npm install yaml --save
 ```
 
 ``` javascript
