@@ -1,0 +1,18 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/tmp
+    docker:
+      - image: cimg/node:16.16.0
+
+    steps:
+      - checkout
+      - run:
+          name: install pnpm
+          command: curl -L https://pnpm.js.org/pnpm.js | node - add --global pnpm
+      - run:
+          name: Install dependencies
+          command: pnpm install
+      - run:
+          name: "Test"
+          command: pnpm run test
