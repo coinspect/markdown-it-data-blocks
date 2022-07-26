@@ -2,7 +2,8 @@
   "name": "markdown-it-data-blocks",
   "version": "1.0.0",
   "description": "Markdown-it plugin for creating block-level containers with metadata",
-  "main": "index.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "type": "module",
   "scripts": {
     "test": "jest test/*.test.ts --verbose"
