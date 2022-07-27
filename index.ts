@@ -52,7 +52,7 @@ const parseMetadata = (
 };
 
 export const parseOptions: (
-  userOptions: MarkdownIt.Options & {
+  userOptions?: MarkdownIt.Options & {
     metadataParser?: (str: string, data: any) => any;
   }
 ) => CustomOptions = (userOptions = {}) => {
@@ -86,10 +86,10 @@ const addMetadata = ({
   metadata,
 }: {
   state: StateBlock;
-  metadata: string;
+  metadata: object;
 }) => {
   let token = state.push(openMetadataName, "div", 1);
-  token.content = metadata;
+  token.meta = metadata;
   token = state.push(closeMetadataName, "div", -1);
 };
 
@@ -149,7 +149,7 @@ const insertBlock = ({
   // Here I had a typing issue,
   // addMetadata puts the parameter in token.content which is typed as a string.
   // Hacked at it but I didn't have any idea of what I did
-  addMetadata({ state, metadata: metadata.title });
+  addMetadata({ state, metadata });
 
   state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd);
 
