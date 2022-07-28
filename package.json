@@ -5,7 +5,8 @@
   "main": "out/index.js",
   "types": "index.d.ts",
   "scripts": {
-    "test": "jest test/*.test.ts --verbose"
+    "test": "jest test/*.test.ts --verbose",
+    "lint": "eslint index.ts"
   },
   "keywords": [
     "markdown-it-plugin",
@@ -16,8 +17,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^28.1.6",
-    "markdown-it": "^13.0.1",
+    "@typescript-eslint/eslint-plugin": "^5.31.0",
+    "@typescript-eslint/parser": "^5.31.0",
+    "eslint": "^8.20.0",
     "jest": "^28.0.0",
+    "markdown-it": "^13.0.1",
     "ts-jest": "^28.0.7",
     "yaml": "^2.1.1"
   },

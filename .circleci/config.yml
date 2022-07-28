@@ -14,5 +14,8 @@ jobs:
           name: Install dependencies
           command: pnpm install
       - run:
+          name: "Lint"
+          command: pnpm run lint
+      - run:
           name: "Test"
           command: pnpm run test
