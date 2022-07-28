@@ -17,5 +17,8 @@ jobs:
           name: "Lint"
           command: pnpm run lint
       - run:
+          name: "Check format"
+          command: pnpm run check-format    
+      - run:
           name: "Test"
           command: pnpm run test

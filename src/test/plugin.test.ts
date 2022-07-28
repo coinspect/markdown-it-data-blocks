@@ -14,7 +14,9 @@ const tokenOrder = [openName, metadataOpenName, metadataCloseName, closeName]
 describe('Test plugin without metadata', () => {
   const markdown = new MarkdownIt().use(data_blocks, options)
   const blockName = 'testName'
-  const md = [' ', `${openMarkup} ${blockName}`, ' ', `${closeMarkup}`].join('\n')
+  const md = [' ', `${openMarkup} ${blockName}`, ' ', `${closeMarkup}`].join(
+    '\n'
+  )
   const result = markdown.parse(md, {})
 
   it('parsing result should be an array', () => {
@@ -26,7 +28,7 @@ describe('Test plugin without metadata', () => {
   })
 
   it(`The token order should be: ${tokenOrder}`, () => {
-    expect(result.slice(0, 4).map(r => r.type)).toEqual(tokenOrder)
+    expect(result.slice(0, 4).map((r) => r.type)).toEqual(tokenOrder)
   })
 
   it(`The ${openName} token should have a meta property as object`, () => {

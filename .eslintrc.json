@@ -10,12 +10,24 @@
     ],
     "rules": {
         "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": ["error", "never"],
-        "quotes": [2, "single", { "avoidEscape": true }],
+        "@typescript-eslint/semi": [
+            "error",
+            "never"
+        ],
+        "quotes": [
+            2,
+            "single",
+            {
+                "avoidEscape": true
+            }
+        ],
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": ["error", "never"]
+        "semi": [
+            "error",
+            "never"
+        ]
     },
     "ignorePatterns": [
         "out",

@@ -1,7 +1,11 @@
-import { getOpenRegex, getCloseRegex, parseOptions, getBlockType } from '../index'
+import {
+  getOpenRegex,
+  getCloseRegex,
+  parseOptions,
+  getBlockType
+} from '../index'
 
 const defaultOptions = parseOptions()
-
 
 describe('parseOptions', () => {
   it('default options should be an object', () => {
@@ -29,7 +33,6 @@ describe('openRegex', () => {
   })
 })
 
-
 describe('closeRegex', () => {
   const { closeMarkup } = defaultOptions
   const re = getCloseRegex(defaultOptions)
@@ -49,7 +52,11 @@ describe('getBlockType', () => {
     expect(getBlockType(`${openMarkup}`, defaultOptions)).toEqual('')
     expect(getBlockType(`${openMarkup}${name}`, defaultOptions)).toEqual(name)
     expect(getBlockType(`${openMarkup} ${name}`, defaultOptions)).toEqual(name)
-    expect(getBlockType(`${openMarkup}    ${name}       `, defaultOptions)).toEqual(name)
-    expect(getBlockType(`${openMarkup}    ${name} xxX      `, defaultOptions)).toEqual(name)
+    expect(
+      getBlockType(`${openMarkup}    ${name}       `, defaultOptions)
+    ).toEqual(name)
+    expect(
+      getBlockType(`${openMarkup}    ${name} xxX      `, defaultOptions)
+    ).toEqual(name)
   })
 })
