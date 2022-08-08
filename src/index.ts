@@ -8,7 +8,7 @@ const closeName = `${NAME}_close`
 const openMetadataName = `${NAME}_metadata_open`
 const closeMetadataName = `${NAME}_metadata_close`
 
-type CustomOptions = {
+export type PluginOptions = {
   titleLevel: number
   titleCb: (metadata: { title: string }, content?: string) => string
   metadataBlockTypeName: string
@@ -19,7 +19,7 @@ type CustomOptions = {
   metadataRenderer: Renderer.RenderRule
   debug: boolean | ((...data: any[]) => void)
 }
-const optionsDefault: CustomOptions = {
+const optionsDefault: PluginOptions = {
   titleLevel: 3,
   titleCb: (metadata: { title: string }) => metadata.title || '',
   metadataBlockTypeName: 'type',
@@ -57,7 +57,7 @@ export const parseOptions: (
   userOptions?: MarkdownIt.Options & {
     metadataParser?: (str: string, data: any) => any
   }
-) => CustomOptions = (userOptions = {}) => {
+) => PluginOptions = (userOptions = {}) => {
   const options = Object.assign({ ...optionsDefault }, userOptions)
   let { debug, openMarkup, closeMarkup } = options
   closeMarkup = closeMarkup || openMarkup
@@ -97,7 +97,7 @@ const addMetadata = ({
   token = state.push(closeMetadataName, 'div', -1)
 }
 
-const renderDefault: (options: CustomOptions) => Renderer.RenderRule =
+const renderDefault: (options: PluginOptions) => Renderer.RenderRule =
   ({ metadataBlockTypeName }) =>
   (tokens, idx, _options, self) => {
     const token = tokens[idx]
@@ -117,7 +117,7 @@ export const getOpenRegex = ({ openMarkup }: { openMarkup: string }) =>
 export const getCloseRegex = ({ closeMarkup }: { closeMarkup: string }) =>
   new RegExp(`^${closeMarkup}\\s*$`)
 
-export const getBlockType = (openTag: string, { openMarkup }: CustomOptions) =>
+export const getBlockType = (openTag: string, { openMarkup }: PluginOptions) =>
   `${openTag}`.replace(`${openMarkup}`, '').trim().split(' ')[0].trim()
 
 const insertBlock = ({
@@ -135,7 +135,7 @@ const insertBlock = ({
   tokenStart: number
   content: string
   tokenEnd: number
-  options: CustomOptions
+  options: PluginOptions
 }) => {
   const { openMarkup, closeMarkup, tag, titleCb, titleLevel } = options
   const title =
@@ -178,7 +178,7 @@ export const parseBlock = ({
   startLine: number
   endLine: number
   silent: boolean
-  options: CustomOptions
+  options: PluginOptions
 }) => {
   const { metadataBlockTypeName } = options
   const openRegex = getOpenRegex(options)
