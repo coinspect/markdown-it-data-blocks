@@ -18,6 +18,7 @@ export type PluginOptions = {
   metadataParser: ((str: string, data: any) => object) | undefined
   metadataRenderer: Renderer.RenderRule
   debug: boolean | ((...data: any[]) => void)
+  wrapOnly: boolean | undefined
 }
 const optionsDefault: PluginOptions = {
   titleLevel: 3,
@@ -28,7 +29,8 @@ const optionsDefault: PluginOptions = {
   closeMarkup: '/--',
   metadataParser: undefined,
   metadataRenderer: () => '', // don't render metadata as default
-  debug: false
+  debug: false,
+  wrapOnly: false
 }
 
 const parseMetadata = (
@@ -137,7 +139,8 @@ const insertBlock = ({
   tokenEnd: number
   options: PluginOptions
 }) => {
-  const { openMarkup, closeMarkup, tag, titleCb, titleLevel } = options
+  const { openMarkup, closeMarkup, tag, titleCb, titleLevel, wrapOnly } =
+    options
   const title =
     typeof titleCb === 'function' ? titleCb(metadata, content) : undefined
 
@@ -150,14 +153,10 @@ const insertBlock = ({
   token.map = tokenMap
 
   // Add title
-  if (title) {
+  if (title && !wrapOnly) {
     addTitle({ state, title, titleLevel })
   }
 
-  // Add metadata block (to render)
-  // Here I had a typing issue,
-  // addMetadata puts the parameter in token.content which is typed as a string.
-  // Hacked at it but I didn't have any idea of what I did
   addMetadata({ state, metadata })
 
   state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd)
