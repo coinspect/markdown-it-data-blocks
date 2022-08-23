@@ -142,11 +142,12 @@ const insertBlock = ({
     typeof titleCb === 'function' ? titleCb(metadata, content) : undefined
 
   let token = state.push(openName, tag, 1)
+  const tokenMap: [number, number] = [tokenStart, tokenEnd]
   token.meta = metadata
   token.markup = openMarkup
   token.content = content
   token.block = true
-  token.map = [tokenStart, tokenEnd]
+  token.map = tokenMap
 
   // Add title
   if (title) {
@@ -163,6 +164,7 @@ const insertBlock = ({
 
   token = state.push(closeName, tag, -1)
   token.markup = closeMarkup
+  token.map = tokenMap
 
   state.line = startLine + tokenEnd + 1
 }
