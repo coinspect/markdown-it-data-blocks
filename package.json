@@ -6,6 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest src/test/*.test.ts --verbose",
+    "test-file":"jest $FILE --collectCoverage false",
     "lint": "eslint src/index.ts",
     "clean": "rm -rf dist",
     "build": "tsc",
