@@ -22,7 +22,8 @@
   },
   "exclude": [
     "src/test",
-    "./node_modules/",
-    "./dist/"
+    "coverage",
+    "dist/**/*",
+    "out"
   ],
 }
