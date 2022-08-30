@@ -58,4 +58,18 @@ describe('Test plugin without metadata', () => {
   it('The token content should have the content', () => {
     expect(result[0].content).toBe(content)
   })
+
+  it('The consecutive blocks should be parsed', () => {
+    const md = [
+      `${openMarkup} ${blockName}`,
+      content,
+      `${closeMarkup}`,
+      `${openMarkup} ${blockName}`,
+      content + 2,
+      `${closeMarkup}`
+    ].join('\n')
+    const tokens = markdown.parse(md, {})
+    expect(tokens.filter(({ type }) => type === openName).length).toBe(2)
+    expect(tokens.filter(({ type }) => type === closeName).length).toBe(2)
+  })
 })

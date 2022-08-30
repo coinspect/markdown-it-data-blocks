@@ -144,13 +144,14 @@ const insertBlock = ({
   const title =
     typeof titleCb === 'function' ? titleCb(metadata, content) : undefined
 
+  const start = startLine + tokenStart
+  const end = startLine + tokenEnd
   let token = state.push(openName, tag, 1)
-  const tokenMap: [number, number] = [tokenStart, tokenEnd]
   token.meta = metadata
   token.markup = openMarkup
   token.content = content
   token.block = true
-  token.map = tokenMap
+  token.map = [start, end]
 
   // Add title
   if (title && !wrapOnly) {
@@ -160,12 +161,11 @@ const insertBlock = ({
   addMetadata({ state, metadata })
 
   state.md.block.tokenize(state, startLine + tokenStart, startLine + tokenEnd)
-
   token = state.push(closeName, tag, -1)
   token.markup = closeMarkup
-  token.map = tokenMap
+  token.map = [start, end]
 
-  state.line = startLine + tokenEnd + 1
+  state.line = end + 1
 }
 
 export const parseBlock = ({
@@ -187,17 +187,15 @@ export const parseBlock = ({
 
   const opener = state.getLines(startLine, startLine + 1, 0, false)
 
-  if (
-    !openRegex.test(opener) ||
-    (startLine !== 0 && !state.isEmpty(startLine - 1))
-  ) {
+  if (!openRegex.test(opener)) {
     return false
   }
 
   const nextLines = state.getLines(startLine + 1, endLine, 0, false).split('\n')
+
   const end = nextLines.findIndex((x: string) => closeRegex.test(x))
 
-  if (!end) {
+  if (end < 0) {
     return false
   }
 
@@ -206,6 +204,9 @@ export const parseBlock = ({
   let metadataEnd = nextLines.findIndex(
     (x: string, i: number) => i > 0 && x === ''
   )
+
+  metadataEnd = metadataEnd > 0 ? metadataEnd : 0
+
   let metadata = parseMetadata(
     nextLines
       .slice(0, metadataEnd)
@@ -218,6 +219,7 @@ export const parseBlock = ({
   if (typeof metadata !== 'object') {
     metadata = {}
   }
+
   if (!Object.keys(metadata).length) {
     metadataEnd = 0
   }

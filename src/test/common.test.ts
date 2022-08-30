@@ -18,6 +18,7 @@ describe('openRegex', () => {
   const re = getOpenRegex(defaultOptions)
   it(`openRegex should match the openMarkup: ${openMarkup}`, () => {
     expect(re.test(openMarkup)).toBe(true)
+    expect(re.test(`${openMarkup}\n`)).toBe(true)
   })
 
   it(`ending spaces should be ignored`, () => {
