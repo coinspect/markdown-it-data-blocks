@@ -1,11 +1,12 @@
 import MarkdownIt from 'markdown-it'
-import { default as data_blocks, parseOptions } from '../index'
 import {
+  default as data_blocks,
+  parseOptions,
   openName,
   closeName,
-  metadataOpenName,
-  metadataCloseName
-} from './test.helpers'
+  openMetadataName,
+  closeMetadataName
+} from '../index'
 
 const options = parseOptions()
 
@@ -13,8 +14,8 @@ const { metadataBlockTypeName, openMarkup, closeMarkup } = options
 
 const tokenOrder = [
   openName,
-  metadataOpenName,
-  metadataCloseName,
+  openMetadataName,
+  closeMetadataName,
   'paragraph_open',
   'inline',
   'paragraph_close',

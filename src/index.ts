@@ -2,11 +2,12 @@ import MarkdownIt from 'markdown-it'
 import Renderer from 'markdown-it/lib/renderer'
 import StateBlock from 'markdown-it/lib/rules_block/state_block'
 export const NAME = 'data_blocks'
-const openName = `${NAME}_open`
-const closeName = `${NAME}_close`
 
-const openMetadataName = `${NAME}_metadata_open`
-const closeMetadataName = `${NAME}_metadata_close`
+export const openName = `${NAME}_open`
+export const closeName = `${NAME}_close`
+
+export const openMetadataName = `${NAME}_metadata_open`
+export const closeMetadataName = `${NAME}_metadata_close`
 
 export type PluginOptions = {
   titleLevel: number

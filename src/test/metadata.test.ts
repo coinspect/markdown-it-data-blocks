@@ -1,12 +1,11 @@
 import MarkdownIt from 'markdown-it'
 import yaml from 'yaml'
-import { default as data_blocks, parseOptions } from '../index'
 import {
+  default as data_blocks,
+  parseOptions,
   openName,
-  closeName,
-  metadataOpenName,
-  metadataCloseName
-} from './test.helpers'
+  closeName
+} from '../index'
 
 const metadataParser = (str: string, data: any) => yaml.parse(str)
 const metadataToMd = (metadata: {}): string => yaml.stringify(metadata)
