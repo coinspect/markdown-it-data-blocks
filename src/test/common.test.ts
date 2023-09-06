@@ -21,11 +21,11 @@ describe('openRegex', () => {
     expect(re.test(`${openMarkup}\n`)).toBe(true)
   })
 
-  it(`ending spaces should be ignored`, () => {
+  it('ending spaces should be ignored', () => {
     expect(re.test(`${openMarkup}   `)).toBe(true)
   })
 
-  it(`openMarkup should admit only one word`, () => {
+  it('openMarkup should admit only one word', () => {
     expect(re.test(`${openMarkup} tesT`)).toBe(true)
     expect(re.test(`${openMarkup} Test    `)).toBe(true)
     expect(re.test(`${openMarkup}test`)).toBe(true)
@@ -41,7 +41,7 @@ describe('closeRegex', () => {
     expect(re.test(closeMarkup)).toBe(true)
   })
 
-  it(`ending spaces should be ignored`, () => {
+  it('ending spaces should be ignored', () => {
     expect(re.test(`${closeMarkup}   `)).toBe(true)
   })
 })

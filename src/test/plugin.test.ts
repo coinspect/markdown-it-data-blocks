@@ -52,7 +52,7 @@ describe('Test plugin without metadata', () => {
     expect(typeof result[0].meta).toBe('object')
   })
 
-  it(`The block type should be included in meta`, () => {
+  it('The block type should be included in meta', () => {
     expect(result[0].meta[metadataBlockTypeName]).toEqual(blockName)
   })
 
