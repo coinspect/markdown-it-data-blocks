@@ -55,7 +55,8 @@ describe('Test metadada', () => {
   })
   const title = 'Test title'
   const subtitle = 'Subtitle'
-  const metadata = { title }
+  const id = 'mYBLockId'
+  const metadata = { title, id }
   const blockName = 'block'
   const content = 'Some text'
   const blockContent = [content, `#### ${subtitle}`, 'Test paragraph']
@@ -70,7 +71,7 @@ describe('Test metadada', () => {
 
   it('should add metadata to token', () => {
     const token = tokens[0]
-    expect(token.meta).toStrictEqual({ title, type: blockName })
+    expect(token.meta).toStrictEqual({ title, type: blockName, id })
   })
 
   it('should create a heading token for metadata title', () => {
@@ -83,6 +84,7 @@ describe('Test metadada', () => {
       tokens.findIndex(({ type }) => type === 'heading_close')
     )
     expect(titleTokens.map(({ content }) => content).join('')).toBe(title)
+    expect(headingToken.attrGet('id')).toBe(id)
   })
 
   describe('wrapOnly option', () => {

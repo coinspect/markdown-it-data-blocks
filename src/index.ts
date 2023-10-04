@@ -70,20 +70,27 @@ export const parseOptions: (
   return Object.assign(options, { openMarkup, closeMarkup, debug })
 }
 
-const addTitle = ({
-  state,
-  title,
-  titleLevel
-}: {
-  state: StateBlock
-  title: string
-  titleLevel: number
-}) => {
+const addTitle = (
+  {
+    state,
+    title,
+    titleLevel
+  }: {
+    state: StateBlock
+    title: string
+    titleLevel: number
+  },
+  id?: string
+) => {
   let token = state.push('heading_open', `h${titleLevel}`, 1)
   token.markup = '#'.repeat(titleLevel)
+  if (id) {
+    token.attrSet('id', id)
+  }
   token = state.push('inline', '', 0)
   token.content = `${title}`
   token.children = []
+
   token = state.push('heading_close', 'h3', -1)
   token.markup = '#'.repeat(titleLevel)
 }
@@ -134,7 +141,7 @@ const insertBlock = ({
 }: {
   state: StateBlock
   startLine: number
-  metadata: { title: string }
+  metadata: { title: string; id?: string }
   tokenStart: number
   content: string
   tokenEnd: number
@@ -156,7 +163,7 @@ const insertBlock = ({
 
   // Add title
   if (title && !wrapOnly) {
-    addTitle({ state, title, titleLevel })
+    addTitle({ state, title, titleLevel }, metadata.id)
   }
 
   addMetadata({ state, metadata })
