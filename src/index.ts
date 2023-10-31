@@ -91,7 +91,7 @@ const addTitle = (
   token.content = `${title}`
   token.children = []
 
-  token = state.push('heading_close', 'h3', -1)
+  token = state.push('heading_close', `h${titleLevel}`, -1)
   token.markup = '#'.repeat(titleLevel)
 }
 
