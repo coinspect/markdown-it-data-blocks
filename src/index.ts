@@ -20,6 +20,14 @@ export type PluginOptions = {
   metadataRenderer: Renderer.RenderRule
   debug: boolean | ((...data: any[]) => void)
   wrapOnly: boolean | undefined
+  createTitle?: (
+    {
+      state,
+      title,
+      titleLevel
+    }: { state: StateBlock; title: string; titleLevel: number },
+    id?: string
+  ) => {}
 }
 const optionsDefault: PluginOptions = {
   titleLevel: 3,
@@ -149,6 +157,8 @@ const insertBlock = ({
 }) => {
   const { openMarkup, closeMarkup, tag, titleCb, titleLevel, wrapOnly } =
     options
+  const createTitle =
+    typeof options.createTitle === 'function' ? options.createTitle : addTitle
   const title =
     typeof titleCb === 'function' ? titleCb(metadata, content) : undefined
 
@@ -163,7 +173,7 @@ const insertBlock = ({
 
   // Add title
   if (title && !wrapOnly) {
-    addTitle({ state, title, titleLevel }, metadata.id)
+    createTitle({ state, title, titleLevel }, metadata.id)
   }
 
   addMetadata({ state, metadata })
