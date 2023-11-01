@@ -26,7 +26,7 @@ export type PluginOptions = {
       title,
       titleLevel
     }: { state: StateBlock; title: string; titleLevel: number },
-    id?: string
+    metadata?: { [key: string]: any }
   ) => {}
 }
 const optionsDefault: PluginOptions = {
@@ -88,10 +88,12 @@ const addTitle = (
     title: string
     titleLevel: number
   },
-  id?: string
+  metadata?: { [key: string]: any }
 ) => {
   let token = state.push('heading_open', `h${titleLevel}`, 1)
+  metadata = metadata || {}
   token.markup = '#'.repeat(titleLevel)
+  const { id } = metadata
   if (id) {
     token.attrSet('id', id)
   }
@@ -173,7 +175,7 @@ const insertBlock = ({
 
   // Add title
   if (title && !wrapOnly) {
-    createTitle({ state, title, titleLevel }, metadata.id)
+    createTitle({ state, title, titleLevel }, metadata as any)
   }
 
   addMetadata({ state, metadata })
